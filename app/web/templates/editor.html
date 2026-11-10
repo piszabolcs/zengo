@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ project.name }}{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <p class="small"><a href="/">Hangoskönyvek</a> / <a href="/projects/{{ project.id }}">{{ project.name }}</a> /</p>
+    <h1>Szöveg szerkesztése</h1>
+    <p>Ezt a szöveget olvassa fel a hang. A jobb oldali hibára kattintva a sorára ugrasz.</p>
+  </div>
+  <a class="btn" href="/projects/{{ project.id }}">Vissza a hangoskönyvhöz</a>
+</header>
+
+<div class="editor" data-editor data-project="{{ project.id }}">
+  <nav class="panel chapters" aria-labelledby="fej-cim">
+    <h2 id="fej-cim">Fejezetek</h2>
+    <div id="chapter-list">{% include "partials/chapters.html" %}</div>
+  </nav>
+
+  <section aria-labelledby="forg-cim">
+    <h2 id="forg-cim" class="visually-hidden">Forgatókönyv</h2>
+    <form id="script-form" hx-post="/ui/projects/{{ project.id }}/script" hx-target="#issues" hx-indicator="#save-spinner">
+      <div class="toolbar">
+        <button class="btn btn-primary" type="submit" title="Mentés (Ctrl+S)">{{ icon("save") }}Mentés</button>
+        <button class="btn" type="button" data-preview title="A kurzor alatti blokk meghallgatása (Ctrl+Enter)">{{ icon("play") }}Előhallgatás</button>
+        <span class="spinner" id="save-spinner" aria-hidden="true"></span>
+        <span class="status-line grow" id="editor-status" role="status" aria-live="polite"></span>
+        <span class="small muted mono num" id="cursor-pos" aria-hidden="true"></span>
+      </div>
+      <label for="script" class="visually-hidden">A forgatókönyv szövege (.tts.md)</label>
+      <div class="code-wrap">
+        <div class="gutter" id="gutter" aria-hidden="true"></div>
+        <textarea id="script" name="script_text" class="code" spellcheck="false" autocomplete="off"
+                  wrap="off" data-script aria-describedby="issues">{{ script_text }}</textarea>
+      </div>
+      <audio id="preview-audio" controls hidden style="margin-top: var(--space-3); width: 100%"></audio>
+    </form>
+  </section>
+
+  <aside class="stack">
+    <section class="panel issues" aria-labelledby="hiba-cim">
+      <h2 id="hiba-cim">Ellenőrzés</h2>
+      <div id="issues">{% include "partials/issues.html" %}</div>
+    </section>
+
+  </aside>
+</div>
+{% endblock %}

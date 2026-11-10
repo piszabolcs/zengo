@@ -1,0 +1,58 @@
+{% from "_icons.html" import icon %}
+{% set live = job.status in ("running", "queued") %}
+{# beágyazva (a hangoskönyv oldalán) a külső állapotblokk frissül, a kártya nem kérdez le magától #}
+{% set tgt = "#project-status" if embedded else "#job-" ~ job.id %}
+<article class="panel job" id="job-{{ job.id }}" aria-labelledby="job-{{ job.id }}-title"
+         {% if live and not embedded %}hx-get="/ui/jobs/{{ job.id }}" hx-trigger="every 1s" hx-swap="outerHTML"{% endif %}>
+  <div class="job-head">
+    <h2 id="job-{{ job.id }}-title" class="grow">{% if embedded %}Generálás{% else %}<a href="/projects/{{ job.project_id }}">{{ job.project_name or "Törölt projekt" }}</a>{% endif %}</h2>
+    <span class="badge" data-status="{{ job.status }}">{{ STATUS_NAMES[job.status] }}{% if job.status == "running" and job.phase in PHASE_NAMES %} · {{ PHASE_NAMES[job.phase] }}{% endif %}</span>
+  </div>
+  <div class="progress" role="progressbar" aria-label="Haladás" aria-valuemin="0" aria-valuemax="100"
+       aria-valuenow="{{ job.percent }}" aria-valuetext="{{ job.done_chunks }} / {{ job.total_chunks }} chunk">
+    <span style="width: {{ job.percent }}%"></span>
+  </div>
+  <dl class="counters">
+    <div><dt>Kész / összes</dt><dd>{{ job.done_chunks }} / {{ job.total_chunks or "–" }}</dd></div>
+    <div><dt>Haladás</dt><dd>{{ "%.1f"|format(job.percent) }}%</dd></div>
+    <div><dt>Eltelt</dt><dd>{{ job.elapsed_s|duration }}</dd></div>
+    <div><dt>Hátralévő</dt><dd>{{ job.eta_s|duration }}</dd></div>
+    <div><dt>Formátum</dt><dd>{{ (job.request.formats or [])|join(", ")|upper }}</dd></div>
+  </dl>
+  {% if job.error %}
+  <div class="banner banner-error" role="alert">{{ icon("alert") }}<div>{{ job.error }}</div></div>
+  {% endif %}
+  <div class="row">
+    {% if job.status in ("running", "queued") %}
+    <button class="btn btn-sm" hx-post="/ui/jobs/{{ job.id }}/pause" hx-target="{{ tgt }}" hx-swap="outerHTML">{{ icon("pause") }}Szünet</button>
+    {% endif %}
+    {% if job.status in ("paused", "failed") %}
+    <button class="btn btn-sm btn-primary" hx-post="/ui/jobs/{{ job.id }}/resume" hx-target="{{ tgt }}" hx-swap="outerHTML">{{ icon("play") }}Folytatás</button>
+    {% endif %}
+    {% if job.status in ("running", "queued", "paused") %}
+    <button class="btn btn-sm btn-danger" hx-post="/ui/jobs/{{ job.id }}/cancel" hx-target="{{ tgt }}" hx-swap="outerHTML"
+            hx-confirm="Biztosan törlöd a feladatot? A kész részek a gyorsítótárban maradnak.">{{ icon("stop") }}Törlés</button>
+    {% endif %}
+    {% if job.status == "done" and job.outputs %}<span class="small muted num">{{ job.outputs|length }} kimeneti fájl</span>{% endif %}
+  </div>
+  {% if job.qa_warnings or job.failed_chunks %}
+  <details class="review" {% if not live %}open{% endif %}>
+    <summary><strong>Ellenőrizendő részek</strong> <span class="num">({{ job.qa_warnings|length + job.failed_chunks|length }})</span></summary>
+    <ul class="review">
+      {% for c in job.failed_chunks %}
+      <li><span><span class="issue-error">Nem készült el:</span> {{ c.text }}</span>
+        {% if not live %}<button class="btn btn-sm" hx-post="/ui/jobs/{{ job.id }}/regenerate/{{ c.chunk_id }}" hx-target="{{ tgt }}" hx-swap="outerHTML">{{ icon("refresh") }}Újragenerálás</button>{% endif %}</li>
+      {% endfor %}
+      {% for c in job.qa_warnings %}
+      <li>
+        <span>{{ c.text }} <span class="small muted num">(WER {{ "%.2f"|format(c.wer or 0) }})</span></span>
+        <span class="row">
+          <button class="btn btn-sm" type="button" data-play="/ui/chunks/{{ c.chunk_id }}.wav" aria-label="Lejátszás: {{ c.text[:40] }}">{{ icon("play") }}</button>
+          {% if not live %}<button class="btn btn-sm" hx-post="/ui/jobs/{{ job.id }}/regenerate/{{ c.chunk_id }}" hx-target="{{ tgt }}" hx-swap="outerHTML">{{ icon("refresh") }}Újragenerálás</button>{% endif %}
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+  </details>
+  {% endif %}
+</article>

@@ -1,0 +1,23 @@
+{% from "_icons.html" import icon %}
+{% if error %}<p class="banner banner-error" role="alert">{{ error }}</p>{% endif %}
+{% if entries %}
+<table>
+  <thead><tr><th scope="col">Írott</th><th scope="col">Kiejtés</th><th scope="col">Kis-nagybetű</th><th scope="col"><span class="visually-hidden">Műveletek</span></th></tr></thead>
+  <tbody>
+  {% for e in entries %}
+    <tr>
+      <td class="mono">{{ e.written }}</td>
+      <td>{{ e.spoken }}</td>
+      <td>{{ "igen" if e.case_sensitive else "nem" }}</td>
+      <td class="actions">
+        <button class="btn btn-sm" type="button" data-say="{{ e.spoken }}" aria-label="Meghallgatás: {{ e.written }}">{{ icon("play") }}</button>
+        <button class="btn btn-sm btn-danger" hx-post="/ui/lexicon/delete" hx-vals='{"written": {{ e.written|tojson }}}'
+                hx-target="#lex-rows" aria-label="{{ e.written }} törlése">{{ icon("trash") }}</button>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty">A szótár üres. Vegyél fel egy rosszul ejtett szót a fenti űrlappal.</p>
+{% endif %}

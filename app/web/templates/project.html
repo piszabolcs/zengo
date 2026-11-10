@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ project.name }}{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <p class="small"><a href="/">Hangoskönyvek</a> /</p>
+    <h1>{{ project.name }}</h1>
+  </div>
+</header>
+
+<div class="stack project-page">
+  {% if math %}
+  <div class="banner banner-warn" role="note">
+    {{ icon("alert") }}<div><strong>Ebben az anyagban képletek vannak.</strong> Jobb eredményhez készíts
+    forgatókönyvet a Claude skill-lel, és azt importáld.</div>
+  </div>
+  {% endif %}
+
+  {% include "partials/project_status.html" %}
+
+  <details class="panel">
+    <summary><strong>Hang és kimenet beállításai</strong></summary>
+    <form class="stack" style="margin-top: var(--space-3)" hx-post="/ui/projects/{{ project.id }}/settings"
+          hx-target="#settings-result">
+      {% set s = project.settings %}
+      <div class="field">
+        <label for="p-voice">Hangprofil</label>
+        <select id="p-voice" name="voice_id">
+          {% for v in voices %}<option value="{{ v.id }}" {% if v.id == s.voice_id %}selected{% endif %}>{{ v.name }} – {{ ENGINE_NAMES.get(v.engine_id, v.engine_id) }}</option>{% endfor %}
+        </select>
+      </div>
+      <label class="check"><input type="checkbox" name="announce_chapters" {% if s.announce_chapters %}checked{% endif %}> Fejezetcím bemondása</label>
+      <label class="check"><input type="checkbox" name="qa_enabled" {% if s.qa_enabled %}checked{% endif %}> Minőségellenőrzés (beszédfelismerés)</label>
+      <label class="check"><input type="checkbox" name="read_footnotes" {% if s.read_footnotes %}checked{% endif %}> Lábjegyzetek (újraimportnál)</label>
+      <label class="check"><input type="checkbox" name="read_figure_captions" {% if s.read_figure_captions %}checked{% endif %}> Ábraaláírások (újraimportnál)</label>
+      <fieldset>
+        <legend>Kimenet</legend>
+        <label class="check"><input type="radio" name="output_mode" value="chapters" {% if s.output_mode != "single" %}checked{% endif %}> Fejezetenként külön MP3</label>
+        <label class="check"><input type="radio" name="output_mode" value="single" {% if s.output_mode == "single" %}checked{% endif %}> Egyetlen MP3, fejezetjelölőkkel</label>
+        <label class="check"><input type="checkbox" name="fmt_m4b" {% if "m4b" in s.export_formats %}checked{% endif %}> M4B hangoskönyv is</label>
+      </fieldset>
+      <div class="field">
+        <label for="p-speed">Tempó az exportban</label>
+        <input id="p-speed" type="number" name="export_speed" min="0.8" max="1.5" step="0.05" value="{{ s.export_speed }}">
+      </div>
+      <div class="row">
+        <button class="btn" type="submit">{{ icon("save") }}Mentés</button>
+        <span class="small muted">A változás a következő generálásra érvényes.</span>
+      </div>
+      <div id="settings-result" aria-live="polite"></div>
+    </form>
+  </details>
+
+  <div class="row">
+    <button class="btn btn-sm btn-danger" hx-post="/ui/projects/{{ project.id }}/delete" hx-target="#delete-result"
+            hx-confirm="Biztosan törlöd a listáról? A kész hangfájlok a mappában megmaradnak.">{{ icon("trash") }}Hangoskönyv törlése</button>
+    <span id="delete-result" aria-live="polite"></span>
+  </div>
+  <p class="small muted">Haladóknak: <a href="/projects/{{ project.id }}/script">a felolvasott szöveg kézi szerkesztése</a>{% if warnings %}
+    ({{ warnings|length }} megjegyzés a szöveghez){% endif %}.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+[project]
+name = "felolvaso-engine-piper"
+version = "1.0.0"
+description = "Felolvasó Piper worker (CPU, gyors előnézet)"
+requires-python = ">=3.11,<3.12"
+dependencies = ["piper-tts>=1.8,<1.9", "soundfile>=0.13,<0.14", "numpy>=1.26"]
+
+[tool.uv]
+package = false

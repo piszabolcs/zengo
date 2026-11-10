@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Kimenetek{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <p class="small"><a href="/">Hangoskönyvek</a> /</p>
+    <h1>Kész fájlok</h1>
+    <p>Fejezetenkénti MP3 és fejezetjelölős M4B, telefonra másolható formában.</p>
+  </div>
+</header>
+{% set any_files = rows|selectattr("outputs.files")|list %}
+{% if any_files %}
+<div class="stack">
+  {% for r in any_files %}
+  <section class="panel" aria-labelledby="o-{{ r.project.id }}">
+    <div class="job-head">
+      <h2 id="o-{{ r.project.id }}" class="grow"><a href="/projects/{{ r.project.id }}">{{ r.project.name }}</a></h2>
+      <button class="btn btn-sm" hx-post="/ui/projects/{{ r.project.id }}/open-folder" hx-target="#open-{{ r.project.id }}">{{ icon("folder") }}Mappa megnyitása</button>
+    </div>
+    <p class="small muted mono" style="margin-block: var(--space-1) var(--space-2)">{{ r.outputs.dir }}</p>
+    <span id="open-{{ r.project.id }}" class="small" aria-live="polite"></span>
+    <table>
+      <thead><tr><th scope="col">Fájl</th><th scope="col">Méret</th></tr></thead>
+      <tbody>{% for f in r.outputs.files %}<tr><td class="mono">{{ f.name }}</td><td class="num">{{ f.bytes|bytes }}</td></tr>{% endfor %}</tbody>
+    </table>
+  </section>
+  {% endfor %}
+</div>
+{% else %}
+<div class="panel empty"><p>Még nincs kész hangoskönyv. Egy generálási feladat végén itt jelennek meg a fájlok.</p></div>
+{% endif %}
+{% endblock %}

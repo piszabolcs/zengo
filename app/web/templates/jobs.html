@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Generálási sor{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <p class="small"><a href="/">Hangoskönyvek</a> /</p>
+    <h1>Generálási sor</h1>
+    <p>Egyszerre egy generálás fut; a többi sorban vár. A futó feladat másodpercenként frissül.</p>
+  </div>
+</header>
+{% if jobs %}
+<div class="stack">
+  {% for job in jobs %}{% include "partials/job_card.html" %}{% endfor %}
+</div>
+{% else %}
+<div class="panel empty"><p>Még nem indult generálás.</p></div>
+{% endif %}
+{% endblock %}

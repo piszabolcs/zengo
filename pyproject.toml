@@ -1,0 +1,57 @@
+[project]
+name = "felolvaso"
+version = "2.0.0"
+description = "Zengő: helyi magyar hangoskönyv-készítő asztali app neurális TTS-sel"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi>=0.160,<0.170",
+    "uvicorn[standard]>=0.50,<0.60",
+    "pydantic>=2,<3",
+    "pymupdf>=2.1,<2.2",
+    "ebooklib>=0.21,<0.22",
+    "python-docx>=1.2,<1.3",
+    "markdown-it-py>=4,<5",
+    "beautifulsoup4>=4.13",
+    "lxml>=6,<7",
+    "num2words==0.5.14",
+    "soundfile>=0.13,<0.14",
+    "numpy>=2,<3",
+    "tomli-w>=1,<2",
+    "platformdirs>=4,<5",
+    "mcp>=2,<3",
+    "httpx>=0.27",
+    "faster-whisper>=1.2,<1.3",
+    "jinja2>=3.1,<3.2",
+    "python-multipart>=0.0.18",
+    "pywebview>=6.2,<7",
+]
+
+[project.scripts]
+felolvaso = "app.main:run"
+felolvaso-mcp = "mcp_server.server:main"
+zengo = "app.desktop:main"
+
+[dependency-groups]
+dev = ["pytest>=8,<9", "ruff"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app", "mcp_server"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-m 'not engines'"
+markers = ["engines: valódi TTS motorokkal futó lassú tesztek (uv run pytest -m engines)"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+extend-exclude = ["engines"]
+
+[tool.ruff.lint]
+# FastAPI függőség-injektálás: a Depends() alapértelmezett argumentum a szokásos minta
+ignore = ["B008"]

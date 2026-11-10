@@ -1,0 +1,102 @@
+{% from "_icons.html" import icon %}
+{% macro gen_form(label, primary=true) %}
+<form class="stack" hx-post="/ui/projects/{{ project.id }}/jobs" hx-target="#gen-result">
+  <div class="row">
+    <button class="btn {% if primary %}btn-primary btn-lg{% endif %}" type="submit">{{ icon("play") }}{{ label }}</button>
+  </div>
+  {% if chapters|length > 1 %}
+  <details>
+    <summary>Csak egyes fejezetek ({{ chapters|length }})</summary>
+    <fieldset style="margin-top: var(--space-2)">
+      <legend class="visually-hidden">Fejezetek</legend>
+      {% for c in chapters %}
+      <label class="check"><input type="checkbox" name="chapter" value="{{ c.index }}" checked> {{ c.title }}</label>
+      {% endfor %}
+    </fieldset>
+  </details>
+  {% endif %}
+  <div id="gen-result" aria-live="polite"></div>
+</form>
+{% endmacro %}
+<div id="project-status" class="stack"
+     {% if live %}hx-get="/ui/projects/{{ project.id }}/status" hx-trigger="every 1s" hx-swap="outerHTML"{% endif %}>
+  <ol class="steps" aria-label="Hol tart a hangoskönyv">
+    <li data-state="{{ "error" if errors else "done" }}"><span>1</span>Szöveg</li>
+    <li data-state="{{ {"run": "now", "done": "done"}.get(stage, "todo") }}"><span>2</span>Generálás</li>
+    <li data-state="{{ "now" if stage == "done" else "todo" }}"><span>3</span>Meghallgatás</li>
+  </ol>
+
+  {% if errors %}
+  <section class="panel stack" aria-labelledby="st-hiba">
+    <h2 id="st-hiba">A szövegben {{ errors|length }} hiba van, ezért a generálás nem indul</h2>
+    <ul class="small issue-list">
+      {% for i in errors[:5] %}<li><span class="mono num">{{ i.line }}. sor:</span> {{ i.message }}</li>{% endfor %}
+      {% if errors|length > 5 %}<li class="muted">és még {{ errors|length - 5 }} további</li>{% endif %}
+    </ul>
+    <div class="row">
+      <a class="btn btn-primary" href="/projects/{{ project.id }}/script">{{ icon("save") }}Hibák javítása</a>
+      <span class="small muted">A szerkesztőben a hibára kattintva a sorára ugrasz.</span>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if stage == "run" %}
+    {% set embedded = true %}
+    {% include "partials/job_card.html" %}
+    {% if job.status == "failed" %}
+    <p class="small muted">A Folytatás onnan megy tovább, ahol megállt: a kész részek megmaradnak.</p>
+    {% endif %}
+  {% elif stage == "done" %}
+  <section class="panel stack" aria-labelledby="st-kesz">
+    <div class="job-head">
+      <h2 id="st-kesz" class="grow">Kész a hangoskönyv</h2>
+      <span class="badge" data-status="done">{{ outputs.files|length }} fájl</span>
+    </div>
+    <div class="row">
+      <a class="btn btn-primary btn-lg" href="/projects/{{ project.id }}/reader">{{ icon("reader") }}Meghallgatás és olvasás</a>
+      <button class="btn" hx-post="/ui/projects/{{ project.id }}/open-folder" hx-target="#open-result">{{ icon("folder") }}Mappa megnyitása</button>
+      <span id="open-result" class="small" aria-live="polite"></span>
+    </div>
+    <details>
+      <summary>Fájlok ({{ outputs.files|length }})</summary>
+      <p class="small muted mono" style="margin-block: var(--space-2)">{{ outputs.dir }}</p>
+      <ul class="small" style="padding-left: 1.1em">
+        {% for f in outputs.files %}<li class="mono">{{ f.name }} <span class="muted num">({{ f.bytes|bytes }})</span></li>{% endfor %}
+      </ul>
+    </details>
+    {% if job and job.status == "done" and (job.qa_warnings or job.failed_chunks) %}
+    <details class="review">
+      <summary><strong>Ellenőrizendő részek</strong> <span class="num">({{ job.qa_warnings|length + job.failed_chunks|length }})</span>
+        <span class="small muted">: itt a felolvasás eltérhet a szövegtől</span></summary>
+      <ul class="review">
+        {% for c in job.failed_chunks %}
+        <li><span><span class="issue-error">Nem készült el:</span> {{ c.text }}</span>
+          <button class="btn btn-sm" hx-post="/ui/jobs/{{ job.id }}/regenerate/{{ c.chunk_id }}" hx-target="#project-status" hx-swap="outerHTML">{{ icon("refresh") }}Újragenerálás</button></li>
+        {% endfor %}
+        {% for c in job.qa_warnings %}
+        <li>
+          <span>{{ c.text }}</span>
+          <span class="row">
+            <button class="btn btn-sm" type="button" data-play="/ui/chunks/{{ c.chunk_id }}.wav" aria-label="Lejátszás: {{ c.text[:40] }}">{{ icon("play") }}</button>
+            <button class="btn btn-sm" hx-post="/ui/jobs/{{ job.id }}/regenerate/{{ c.chunk_id }}" hx-target="#project-status" hx-swap="outerHTML">{{ icon("refresh") }}Újragenerálás</button>
+          </span>
+        </li>
+        {% endfor %}
+      </ul>
+    </details>
+    {% endif %}
+    {% if not errors %}
+    <details>
+      <summary>Újragenerálás (például másik hanggal)</summary>
+      <div style="margin-top: var(--space-3)">{{ gen_form("Generálás újra", false) }}</div>
+    </details>
+    {% endif %}
+  </section>
+  {% elif not errors %}
+  <section class="panel stack" aria-labelledby="st-indit">
+    <h2 id="st-indit">Még nincs hang</h2>
+    <p class="muted">A szöveg rendben van. Indítsd el a generálást; közben ezen az oldalon látod, hol tart.</p>
+    {{ gen_form("Generálás indítása") }}
+  </section>
+  {% endif %}
+</div>

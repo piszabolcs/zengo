@@ -1,0 +1,64 @@
+# képlet<TAB>elvárt felolvasás (MATH_SUSPECT: a szabályalapú olvasó nem érti, Claude kell)
+# forrás: tanulashoz.md; a felolvasás a referencia (elektrodinamika-tanulashoz.tts.md) szabályait követi
+\vec E = \frac{\vec F}{q}	é vektor egyenlő ef vektor per kú
+\vec P = \kappa\,\varepsilon_0\,\vec E	pé vektor egyenlő kappa szorozva epszilon nulla szorozva é vektor
+\oint_f\vec D\,d\vec A = Q	zárt felületi integrál az ef zárt felületre, dé vektor skalárszorzat dé á vektor, egyenlő kú
+\operatorname{rot}\vec H = \vec j + \frac{\partial\vec D}{\partial t}	rotáció há vektor egyenlő jé vektor plusz dé vektor parciális té szerint
+\oint_f\vec B\,d\vec A = 0	zárt felületi integrál az ef zárt felületre, bé vektor skalárszorzat dé á vektor, egyenlő nulla
+\vec B = \mu_0\mu_r\vec H	bé vektor egyenlő mű nulla szorozva mű er szorozva há vektor
+\operatorname{rot}\vec v = \begin{pmatrix}\partial_y v_z - \partial_z v_y\\ \partial_z v_x - \partial_x v_z\\ \partial_x v_y - \partial_y v_x\end{pmatrix}	MATH_SUSPECT
+\oint_g\vec H\,d\vec s = \int_F\vec j\,d\vec A + \frac{d}{dt}\int_F\vec D\,d\vec A	zárt görbe menti integrál a gé görbére, há vektor skalárszorzat dé es vektor, egyenlő integrál az ef felületre, jé vektor skalárszorzat dé á vektor, plusz dé per dé té, integrál az ef felületre, dé vektor skalárszorzat dé á vektor
+\oint_g\vec E\,d\vec s = 0 \quad\Longleftrightarrow\quad \operatorname{rot}\vec E = 0	zárt görbe menti integrál a gé görbére, é vektor skalárszorzat dé es vektor, egyenlő nulla, ami egyenértékű azzal, hogy rotáció é vektor egyenlő nulla
+U(P) = \int_P^\infty\vec E\,d\vec r	ú pé-ben egyenlő integrál pé-től végtelenig, é vektor skalárszorzat dé er vektor
+\sum U = 0	szumma ú egyenlő nulla
+U(r) = \int_r^\infty E\,dr = \frac{Q}{4\pi\varepsilon}\int_r^\infty\frac{dr}{r^2} = \frac{1}{4\pi\varepsilon}\frac{Q}{r}	ú er-ben egyenlő integrál er-től végtelenig, é dé er, ami egyenlő kú per, zárójelben négy pí szorozva epszilon, szorozva integrál er-től végtelenig, dé er per er négyzet, ami egyenlő egy per, zárójelben négy pí szorozva epszilon, szorozva kú per er
+2\varepsilon EA = \eta A \;\Rightarrow\; E = \frac{\eta}{2\varepsilon}	kettő epszilon szorozva é szorozva á egyenlő éta szorozva á, ebből következik, hogy é egyenlő éta per, zárójelben kettő epszilon
+C = \frac{Q}{U} = \frac{\eta A}{\dfrac{\eta d}{\varepsilon_0\varepsilon_r}} = \varepsilon_0\varepsilon_r\frac{A}{d}	cé egyenlő kú per ú, ami egyenlő egy tört, a számláló éta szorozva á, a nevező éta szorozva dé per, zárójelben epszilon nulla szorozva epszilon er, ami egyenlő epszilon nulla szorozva epszilon er szorozva á per dé
+W = \frac12 QU = \frac12\eta A\cdot Ed = \frac12 DE\cdot Ad = \frac12 DE\cdot V	dupla vé egyenlő egy ketted kú szorozva ú, ami egyenlő egy ketted éta szorozva á szorozva é szorozva dé, ami egyenlő egy ketted dé szorozva é szorozva á szorozva dé, ami egyenlő egy ketted dé szorozva é szorozva vé
+\vec M = -\frac{\vec\ell}{2}\times(-Q\vec E) + \frac{\vec\ell}{2}\times Q\vec E = Q\vec\ell\times\vec E = \vec p\times\vec E	em vektor egyenlő mínusz el vektor per kettő vektoriálisan szorozva, zárójelben mínusz kú szorozva é vektor, plusz el vektor per kettő szorozva kú szorozva é vektor, ami egyenlő kú szorozva el vektor vektoriálisan szorozva é vektor, ami egyenlő pé vektor vektoriálisan szorozva é vektor
+\vec F = (\vec p\cdot\operatorname{grad})\vec E = \operatorname{grad}(\vec p\vec E)	ef vektor egyenlő, zárójelben pé vektor skalárszorzat gradiens, szorozva é vektor, ami egyenlő gradiens, zárójelben pé vektor skalárszorzat é vektor
+j = \lim_{A\to0}\frac{I}{A}	jé egyenlő limesz á tart nullához, í per á
+\frac{E\ell}{jA} = \rho\frac{\ell}{A} \;\Rightarrow\; \vec E = \rho\,\vec j \quad\Longleftrightarrow\quad \vec j = \sigma\vec E	é szorozva el per, zárójelben jé szorozva á, egyenlő ró szorozva el per á, ebből következik, hogy é vektor egyenlő ró szorozva jé vektor, ami egyenértékű azzal, hogy jé vektor egyenlő szigma szorozva é vektor
+\oint_F\vec j\,d\vec A = -\frac{d}{dt}\int_V\rho\,dV	zárt felületi integrál az ef zárt felületre, jé vektor skalárszorzat dé á vektor, egyenlő mínusz dé per dé té, integrál a vé térfogatra, ró dé vé
+\frac{D_{t2}}{D_{t1}} = \frac{\varepsilon_2}{\varepsilon_1}	dé té kettő per dé té egy egyenlő epszilon kettő per epszilon egy
+\frac{\operatorname{tg}\alpha}{\operatorname{tg}\beta} = \frac{D_{1t}/D_{1n}}{D_{2t}/D_{2n}} = \frac{D_{1t}}{D_{2t}} = \frac{\varepsilon_1}{\varepsilon_2}	tangens alfa per tangens béta egyenlő egy tört, a számláló dé egy té per dé egy en, a nevező dé kettő té per dé kettő en, ami egyenlő dé egy té per dé kettő té, ami egyenlő epszilon egy per epszilon kettő
+\frac{\operatorname{tg}\alpha}{\operatorname{tg}\beta} = \frac{j_{1t}/j_{1n}}{j_{2t}/j_{2n}} = \frac{j_{1t}}{j_{2t}} = \frac{\sigma_1}{\sigma_2}	tangens alfa per tangens béta egyenlő egy tört, a számláló jé egy té per jé egy en, a nevező jé kettő té per jé kettő en, ami egyenlő jé egy té per jé kettő té, ami egyenlő szigma egy per szigma kettő
+p_J = \frac{P}{V} = \frac{UI}{A\ell} = \frac{E\ell\cdot jA}{A\ell} = \vec E\vec j = \rho j^2 = \sigma E^2	pé jé egyenlő pé per vé, ami egyenlő ú szorozva í per, zárójelben á szorozva el, ami egyenlő é szorozva el szorozva jé szorozva á per, zárójelben á szorozva el, ami egyenlő é vektor skalárszorzat jé vektor, ami egyenlő ró szorozva jé négyzet, ami egyenlő szigma szorozva é négyzet
+\vec H = \frac{I}{4\pi}\int\frac{\vec r\times d\vec s}{r^3}	há vektor egyenlő í per, zárójelben négy pí, szorozva integrál er vektor vektoriálisan szorozva dé es vektor per er köb
+\operatorname{rot}\vec H = \vec j	rotáció há vektor egyenlő jé vektor
+B = \mu\frac{NI}{\ell}	bé egyenlő mű szorozva en szorozva í per el
+\vec F = I\int d\vec r\times\vec B	ef vektor egyenlő í szorozva integrál dé er vektor vektoriálisan szorozva bé vektor
+qE = qvB \;\Rightarrow\; v = \frac{E}{B}	kú szorozva é egyenlő kú szorozva vé szorozva bé, ebből következik, hogy vé egyenlő é per bé
+M = 2\cdot BIa\cdot\frac b2 = BIab = BIA	em egyenlő kettő szorozva bé szorozva í szorozva á szorozva bé per kettő, ami egyenlő bé szorozva í szorozva á szorozva bé, ami egyenlő bé szorozva í szorozva á
+\vec M = \vec m\times\vec B	em vektor egyenlő em vektor vektoriálisan szorozva bé vektor
+\vec F = \operatorname{grad}\left(\vec m\vec B\right) = -\operatorname{grad}E_p	ef vektor egyenlő gradiens, zárójelben em vektor skalárszorzat bé vektor, ami egyenlő mínusz gradiens é pé
+\oint\vec B\,d\vec A = 0,\quad \operatorname{div}\vec B = 0	zárt felületi integrál bé vektor skalárszorzat dé á vektor, egyenlő nulla, divergencia bé vektor egyenlő nulla
+\vec M = \chi\vec H	em vektor egyenlő khí szorozva há vektor
+\vec E^* = \frac{\vec F^*}{q} = \vec v\times\vec B	é csillag vektor egyenlő ef csillag vektor per kú, ami egyenlő vé vektor vektoriálisan szorozva bé vektor
+I = \frac{\varepsilon}{R}	í egyenlő epszilon per er
+F = qE	ef egyenlő kú szorozva é
+P = κε₀E	pé egyenlő kappa szorozva epszilon nulla szorozva é
+∂B/∂t = 0	bé parciális té szerint egyenlő nulla
+ΣU = 0	szumma ú egyenlő nulla
+∮D dA = Q	zárt felületi integrál dé dé á, egyenlő kú
+C = 2πεh/ln(r₂/r₁)	cé egyenlő egy tört, a számláló kettő pí szorozva epszilon szorozva há, a nevező természetes alapú logaritmus, zárójelben er kettő per er egy
+E = η/ε₀	é egyenlő éta per epszilon nulla
+W = pE(cosφ₁ − cosφ₂)	dupla vé egyenlő pé szorozva é szorozva, zárójelben koszinusz fí egy mínusz koszinusz fí kettő
+E → 2kp/x³	é tart a kettő ká szorozva pé per iksz köb értékhez
+j = σE	jé egyenlő szigma szorozva é
+∮j dA = 0	zárt felületi integrál jé dé á, egyenlő nulla
+W = QU = UIt	dupla vé egyenlő kú szorozva ú, ami egyenlő ú szorozva í szorozva té
+H = I/(2rπ)	há egyenlő í per, zárójelben kettő er szorozva pí
+v = ℓ/Δt	vé egyenlő el per delta té
+M = IA × B	em egyenlő í szorozva á szorozva bé
+B = 0	bé egyenlő nulla
+Φₘ = BA = μ(NA/ℓ)I	nagy fí em egyenlő bé szorozva á, ami egyenlő mű szorozva, zárójelben en szorozva á per el, szorozva í
+IR − ε	í szorozva er mínusz epszilon
+τ = L/R	tau egyenlő el per er
+dW = LI dI	dé dupla vé egyenlő el szorozva í dé í
+M = χH	em egyenlő khí szorozva há
+Nₓ → 0	en iksz tart nullához
+M = χH_in	em egyenlő khí szorozva há in
+= χ_meas	egyenlő khí meas
+Φ = BA = μHA	nagy fí egyenlő bé szorozva á, ami egyenlő mű szorozva há szorozva á
+ΔH = εμ∂²H/∂t²	delta há egyenlő epszilon szorozva mű szorozva há második parciális deriváltja té szerint

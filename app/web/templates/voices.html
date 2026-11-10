@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Hangok{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Hangok</h1>
+    <p>A hangprofil egy motor, egy referencia hangminta és annak pontos átirata.</p>
+  </div>
+</header>
+{% if error %}<div class="banner banner-error" role="alert" style="margin-bottom: var(--space-4)">{{ icon("alert") }}<div>{{ error }}</div></div>{% endif %}
+{% if created %}<div class="banner banner-ok" role="status" style="margin-bottom: var(--space-4)">{{ icon("check") }}<div>A hangprofil elkészült. Próbáld ki a „Teszt” gombbal.</div></div>{% endif %}
+
+<section class="panel" aria-labelledby="lista">
+  <h2 id="lista">Profilok</h2>
+  <table>
+    <thead><tr><th scope="col">Név</th><th scope="col">Motor</th><th scope="col">Azonosító</th><th scope="col"><span class="visually-hidden">Műveletek</span></th></tr></thead>
+    <tbody>
+    {% for v in voices %}
+      <tr {% if v.id == created %}aria-current="true"{% endif %}>
+        <td>{{ v.name }}</td>
+        <td>{{ ENGINE_NAMES.get(v.engine_id, v.engine_id) }}{% if not engines.get(v.engine_id, True) %} <span class="small issue-error">nincs telepítve</span>{% endif %}</td>
+        <td class="mono small">{{ v.id }}</td>
+        <td class="actions">
+          <button class="btn btn-sm" type="button" data-voice-test="{{ v.id }}">{{ icon("play") }}Teszt</button>
+          <form method="post" action="/ui/voices/{{ v.id }}/delete" style="display:inline" onsubmit="return confirm('Törlöd a(z) {{ v.name }} profilt?')">
+            <button class="btn btn-sm btn-danger" type="submit" aria-label="{{ v.name }} törlése">{{ icon("trash") }}</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <p class="small muted" id="voice-status" role="status" aria-live="polite" style="margin-top: var(--space-2)"></p>
+  <audio id="voice-audio" controls hidden style="width: 100%; margin-top: var(--space-2)"></audio>
+</section>
+
+<section class="panel stack" aria-labelledby="uj" style="margin-top: var(--space-5)">
+  <h2 id="uj">Új hangprofil</h2>
+  <form class="stack" method="post" action="/ui/voices" enctype="multipart/form-data">
+    <div class="form-grid">
+      <div class="field">
+        <label for="v-name">Név</label>
+        <input id="v-name" type="text" name="name" required>
+      </div>
+      <div class="field">
+        <label for="v-engine">Motor</label>
+        <select id="v-engine" name="engine_id">
+          {% for e, ok in engines.items() %}<option value="{{ e }}" {% if not ok %}disabled{% endif %}>{{ ENGINE_NAMES[e] }}{% if not ok %} (nincs telepítve){% endif %}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="v-ref">Referencia hangminta (WAV)</label>
+        <input id="v-ref" type="file" name="ref_audio" accept=".wav,audio/wav" aria-describedby="v-ref-hint">
+        <span class="hint" id="v-ref-hint">6–15 s, zajmentes, egy beszélő, elején fél másodperc csend. F5 és XTTS esetén kötelező.</span>
+      </div>
+    </div>
+    <div class="field">
+      <label for="v-text">A referencia pontos átirata</label>
+      <textarea id="v-text" name="ref_text" rows="2"></textarea>
+    </div>
+    <div class="field">
+      <label for="v-params">Paraméterek (JSON)</label>
+      <input id="v-params" type="text" name="params" class="mono" value="{}" aria-describedby="v-params-hint">
+      <span class="hint" id="v-params-hint">Pl. F5: <code>{"nfe_step": 32, "speed": 1.0}</code>, Piper: <code>{"model": "hu_HU-berta-medium"}</code></span>
+    </div>
+    <div><button class="btn btn-primary" type="submit">{{ icon("save") }}Profil létrehozása</button></div>
+  </form>
+</section>
+{% endblock %}

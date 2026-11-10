@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Beállítások{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Beállítások</h1>
+    <p>A <span class="mono">config.toml</span> tartalma; mentés után azonnal érvényes és újraindításkor is megmarad.</p>
+  </div>
+</header>
+{% if saved %}<div class="banner banner-ok" role="status" style="margin-bottom: var(--space-4)">{{ icon("check") }}<div>Beállítások mentve.</div></div>{% endif %}
+<form class="stack" method="post" action="/ui/settings">
+  <section class="panel stack" aria-labelledby="s-ut">
+    <h2 id="s-ut">Útvonalak és hang</h2>
+    <div class="form-grid">
+      <div class="field"><label for="s-out">Kimeneti mappa</label><input id="s-out" type="text" name="output_root" value="{{ cfg.output_root }}"></div>
+      <div class="field"><label for="s-ff">ffmpeg útvonal</label><input id="s-ff" type="text" name="ffmpeg_path" value="{{ cfg.ffmpeg_path }}" aria-describedby="s-ff-h">
+        <span class="hint" id="s-ff-h">{% if ffmpeg and ffmpeg.available %}Most használt: <span class="mono">{{ ffmpeg.path }}</span> ({{ ffmpeg.version }}){% else %}Üresen hagyva a PATH-ból keresi.{% endif %}</span></div>
+      <div class="field"><label for="s-voice">Alapértelmezett hangprofil</label>
+        <select id="s-voice" name="default_voice">{% for v in voices %}<option value="{{ v.id }}" {% if v.id == cfg.default_voice %}selected{% endif %}>{{ v.name }}</option>{% endfor %}</select></div>
+    </div>
+    <label class="check"><input type="checkbox" name="announce_chapters" {% if cfg.announce_chapters %}checked{% endif %}> Fejezetcím bemondása a fejezet elején</label>
+  </section>
+
+  <section class="panel stack" aria-labelledby="s-sz">
+    <h2 id="s-sz">Szünetek (ms)</h2>
+    {% set labels = {"sentence": "Mondat után", "paragraph": "Bekezdés után", "h3_before": "### cím előtt", "h3_after": "### cím után",
+                     "h2_before": "## cím előtt", "h2_after": "## cím után", "chapter_title_after": "Fejezetcím után",
+                     "chapter_end": "Fejezet végén", "list_item": "Listaelem után"} %}
+    <div class="form-grid">
+      {% for key, val in cfg.pauses.items() %}
+      <div class="field"><label for="p-{{ key }}">{{ labels.get(key, key) }}</label>
+        <input id="p-{{ key }}" type="number" min="0" max="10000" step="50" name="pause_{{ key }}" value="{{ val }}" class="num"></div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="panel stack" aria-labelledby="s-qa">
+    <h2 id="s-qa">Minőségellenőrzés és export</h2>
+    <div class="form-grid">
+      <fieldset>
+        <legend>Beszédfelismerés</legend>
+        <label class="check"><input type="checkbox" name="qa_enabled" {% if cfg.qa.enabled %}checked{% endif %}> Bekapcsolva</label>
+        <div class="field"><label for="s-qad">Eszköz</label>
+          <select id="s-qad" name="qa_device"><option value="cpu" {% if cfg.qa.device == "cpu" %}selected{% endif %}>CPU (ajánlott 8 GB VRAM mellett)</option>
+          <option value="cuda" {% if cfg.qa.device == "cuda" %}selected{% endif %}>GPU (CUDA)</option></select></div>
+        <span class="hint small muted">A QA ki- és bekapcsolása az alkalmazás újraindítása után érvényes.</span>
+      </fieldset>
+      <fieldset>
+        <legend>Formátumok</legend>
+        <label class="check"><input type="checkbox" name="fmt_mp3" {% if "mp3" in cfg.export.formats %}checked{% endif %}> Fejezetenkénti MP3</label>
+        <label class="check"><input type="checkbox" name="fmt_m4b" {% if "m4b" in cfg.export.formats %}checked{% endif %}> M4B</label>
+      </fieldset>
+      <div class="field"><label for="s-sp">Tempó (0,8–1,5)</label><input id="s-sp" type="number" min="0.8" max="1.5" step="0.05" name="export_speed" value="{{ cfg.export.speed }}"></div>
+      <div class="field"><label for="s-c">Gyorsítótár mérete (GB)</label><input id="s-c" type="number" min="1" step="1" name="cache_max_gb" value="{{ cfg.cache.max_gb }}" aria-describedby="s-c-h">
+        <span class="hint num" id="s-c-h">Jelenleg: {{ cache_bytes|bytes }}</span></div>
+    </div>
+  </section>
+  <div><button class="btn btn-primary" type="submit">{{ icon("save") }}Mentés</button></div>
+</form>
+{% endblock %}

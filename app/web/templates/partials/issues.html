@@ -1,0 +1,19 @@
+{% if saved %}<p class="small" role="status" data-saved>Mentve{% if errors %}, de hibás: a generálás nem indul{% endif %}.</p>{% endif %}
+{% if not errors and not warnings %}
+<p class="small"><span class="badge" data-status="done">Rendben</span> A forgatókönyv érvényes.</p>
+{% endif %}
+{% if errors %}
+<h3 class="small issue-error" style="margin-block: var(--space-2) var(--space-1)">{{ errors|length }} hiba</h3>
+<ul class="small">
+  {% for i in errors %}<li><button type="button" class="issue-error" data-goto-line="{{ i.line }}"><span class="ln">{{ i.line }}.</span>{{ i.message }}</button></li>{% endfor %}
+</ul>
+{% endif %}
+{% if warnings %}
+<h3 class="small" style="margin-block: var(--space-3) var(--space-1)">{{ warnings|length }} figyelmeztetés</h3>
+<ul class="small">
+  {% for i in warnings %}<li><button type="button" class="issue-warn" data-goto-line="{{ i.line }}"><span class="ln">{{ i.line }}.</span>{{ i.message }}</button></li>{% endfor %}
+</ul>
+{% endif %}
+{% if oob_chapters %}
+<div id="chapter-list" hx-swap-oob="true">{% include "partials/chapters.html" %}</div>
+{% endif %}

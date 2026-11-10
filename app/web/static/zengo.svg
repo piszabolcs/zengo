@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>Zengő</title>
+  <rect x="8" y="8" width="240" height="240" rx="56" fill="#1d3a31"/>
+  <rect x="18" y="18" width="220" height="220" rx="47" fill="none" stroke="#e9efe0" stroke-opacity="0.14" stroke-width="4"/>
+  <path d="M54 72 H150 L60 184 H156" fill="none" stroke="#f0956a" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M182 104 a 28 28 0 0 1 0 48" fill="none" stroke="#e9efe0" stroke-width="16" stroke-linecap="round"/>
+  <path d="M204 84 a 52 52 0 0 1 0 88" fill="none" stroke="#e9efe0" stroke-width="16" stroke-linecap="round" stroke-opacity="0.75"/>
+</svg>

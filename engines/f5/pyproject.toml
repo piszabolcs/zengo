@@ -1,0 +1,25 @@
+[project]
+name = "felolvaso-engine-f5"
+version = "1.0.0"
+description = "Felolvasó F5-TTS worker (magyar súlyok, CUDA)"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "f5-tts>=1.1,<1.2",
+    "torch>=2.7,<2.9",  # 2.9+ torchcodec-et igényel (UNVERIFIED-01)
+    "torchaudio>=2.7,<2.9",
+    "soundfile>=0.13,<0.14",
+    "numpy>=1.26",
+    "datasets>=3",  # a régi datasets nem működik az új pyarrow-val
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }
+torchaudio = { index = "pytorch-cu128" }
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true

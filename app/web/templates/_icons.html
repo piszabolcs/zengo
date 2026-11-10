@@ -1,0 +1,25 @@
+{% macro icon(name) -%}
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+{%- if name == "logo" -%}<path d="M4 6h9L5 18h9"/><path d="M17 10a3 3 0 0 1 0 4M19.5 8a6 6 0 0 1 0 8"/>
+{%- elif name == "projects" -%}<path d="M4 5h6l2 2h8v12H4z"/>
+{%- elif name == "jobs" -%}<path d="M4 12h4l2-6 4 12 2-6h4"/>
+{%- elif name == "voices" -%}<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>
+{%- elif name == "lexicon" -%}<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>
+{%- elif name == "settings" -%}<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/>
+{%- elif name == "outputs" -%}<path d="M12 3v12M7 10l5 5 5-5M4 19h16"/>
+{%- elif name == "upload" -%}<path d="M12 16V4M7 9l5-5 5 5M4 20h16"/>
+{%- elif name == "reader" -%}<path d="M3 5h6a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H3z"/><path d="M21 5h-6a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h7z"/>
+{%- elif name == "prev" -%}<path d="M15 6l-6 6 6 6"/>
+{%- elif name == "next" -%}<path d="M9 6l6 6-6 6"/>
+{%- elif name == "play" -%}<path d="M7 4l13 8-13 8z"/>
+{%- elif name == "pause" -%}<path d="M8 4v16M16 4v16"/>
+{%- elif name == "stop" -%}<rect x="6" y="6" width="12" height="12" rx="1"/>
+{%- elif name == "save" -%}<path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/>
+{%- elif name == "alert" -%}<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/>
+{%- elif name == "check" -%}<path d="M5 12l5 5 9-10"/>
+{%- elif name == "refresh" -%}<path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/>
+{%- elif name == "folder" -%}<path d="M3 6h7l2 2h9v11H3z"/>
+{%- elif name == "trash" -%}<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>
+{%- endif -%}
+</svg>
+{%- endmacro %}

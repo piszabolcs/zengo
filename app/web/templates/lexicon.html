@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Kiejtési szótár{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Kiejtési szótár</h1>
+    <p>Minden projektre érvényes szó → kiejtés táblázat. A változás után csak az érintett részek generálódnak újra.</p>
+  </div>
+</header>
+<section class="panel stack" aria-labelledby="uj-bej">
+  <h2 id="uj-bej">Új bejegyzés</h2>
+  <form class="row" hx-post="/ui/lexicon" hx-target="#lex-rows" hx-on::after-request="if(event.detail.successful) this.reset()">
+    <div class="field grow"><label for="l-w">Írott alak</label><input id="l-w" type="text" name="written" required></div>
+    <div class="field grow"><label for="l-s">Kiejtés</label><input id="l-s" type="text" name="spoken" required></div>
+    <label class="check" style="align-self: end"><input type="checkbox" name="case_sensitive"> Kis-nagybetű érzékeny</label>
+    <button class="btn btn-primary" type="submit" style="align-self: end">Hozzáadás</button>
+  </form>
+  <div class="row">
+    <label for="l-voice" class="small">Meghallgatás ezzel:</label>
+    <select id="l-voice" style="width: auto">{% for v in voices %}<option value="{{ v.id }}" {% if v.id == default_voice %}selected{% endif %}>{{ v.name }}</option>{% endfor %}</select>
+    <span id="voice-status" class="small muted" role="status" aria-live="polite"></span>
+  </div>
+  <audio id="voice-audio" controls hidden style="width: 100%"></audio>
+</section>
+<section class="panel" aria-labelledby="bej" style="margin-top: var(--space-5)">
+  <h2 id="bej">Bejegyzések</h2>
+  <div id="lex-rows">{% include "partials/lexicon_rows.html" %}</div>
+</section>
+{% endblock %}

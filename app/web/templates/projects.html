@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Hangoskönyvek{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Hangoskönyvek</h1>
+    <p>Az eredeti jegyzetet olvasod, a forgatókönyvből készül a hang. Ha meglett, ugyanott meg is hallgathatod.</p>
+  </div>
+</header>
+
+<section class="panel stack" id="uj-projekt" aria-labelledby="uj-cim">
+  <h2 id="uj-cim">Új hangoskönyv</h2>
+  <form class="stack" hx-post="/ui/projects" hx-encoding="multipart/form-data" hx-target="#import-result"
+        hx-indicator="#import-spinner" data-dropzone-form>
+    <div class="dropzones">
+      <label class="dropzone" data-dropzone>
+        {{ icon("upload") }}
+        <strong>1. Eredeti jegyzet</strong>
+        <span class="muted small">PDF, DOCX, EPUB vagy Markdown. Ezt látod az olvasóban.</span>
+        <input type="file" name="original" accept=".pdf,.docx,.epub,.md,.markdown,.txt"
+               class="visually-file" data-file-input aria-describedby="original-name">
+        <span id="original-name" class="small mono" aria-live="polite" data-file-name></span>
+      </label>
+      <label class="dropzone" data-dropzone>
+        {{ icon("upload") }}
+        <strong>2. Felolvasó forgatókönyv</strong>
+        <span class="muted small">.tts.md a Claude-os előkészítőből. Ebből készül a hang.</span>
+        <input type="file" name="file" accept=".md,.tts.md"
+               class="visually-file" data-file-input aria-describedby="file-name">
+        <span id="file-name" class="small mono" aria-live="polite" data-file-name></span>
+      </label>
+    </div>
+    <p class="small muted">Elég az egyik is. Csak jegyzetből az app maga készít forgatókönyvet (képleteknél
+      gyengébb); csak forgatókönyvből az olvasó a forgatókönyv szövegét mutatja.</p>
+    <div class="field">
+      <label for="voice_id">Hang</label>
+      <select id="voice_id" name="voice_id">
+        {% for v in voices %}<option value="{{ v.id }}" {% if v.id == default_voice %}selected{% endif %}>{{ v.name }} – {{ ENGINE_NAMES.get(v.engine_id, v.engine_id) }}</option>{% endfor %}
+      </select>
+    </div>
+    <details>
+      <summary>További lehetőségek</summary>
+      <div class="stack" style="margin-top: var(--space-3)">
+        <div class="form-grid">
+          <fieldset>
+            <legend>Kimenet</legend>
+            <label class="check"><input type="radio" name="output_mode" value="chapters" checked> Fejezetenként külön MP3</label>
+            <label class="check"><input type="radio" name="output_mode" value="single"> Egyetlen MP3, fejezetjelölőkkel</label>
+          </fieldset>
+          <fieldset>
+            <legend>Felolvasás</legend>
+            <label class="check"><input type="checkbox" name="read_footnotes"> Lábjegyzetek felolvasása</label>
+            <label class="check"><input type="checkbox" name="read_figure_captions"> Ábraaláírások felolvasása</label>
+          </fieldset>
+        </div>
+        <label class="check"><input type="checkbox" name="start_now" checked> A generálás rögtön induljon</label>
+      </div>
+    </details>
+    <div class="row">
+      <button class="btn btn-primary btn-lg" type="submit">{{ icon("play") }}Hangoskönyv készítése</button>
+      <span class="spinner" id="import-spinner" aria-hidden="true"></span>
+    </div>
+  </form>
+  <div id="import-result" aria-live="polite"></div>
+</section>
+
+<section aria-labelledby="lista-cim" style="margin-top: var(--space-6)">
+  <div class="row" style="margin-bottom: var(--space-3)">
+    <h2 id="lista-cim" class="grow">Hangoskönyveim</h2>
+    {% if projects %}<a class="small" href="/jobs">Generálási sor</a>{% endif %}
+  </div>
+  {% if projects %}
+  <ul class="project-list">
+    {% for p in projects %}
+    {% set st = p.last_job.status if p.last_job else "" %}
+    <li class="panel project">
+      <h3><a href="/projects/{{ p.id }}">{{ p.name }}</a></h3>
+      <div class="meta">
+        <span class="num">{{ p.chapter_count }} fejezet</span>
+      </div>
+      <div class="row">
+        {% if st == "done" %}<span class="badge" data-status="done">Kész, meghallgatható</span>
+        {% elif st in ("running", "queued") %}<span class="badge" data-status="{{ st }}">Készül a hang</span>
+        {% elif st %}<span class="badge" data-status="{{ st }}">{{ STATUS_NAMES[st] }}</span>
+        {% else %}<span class="badge">Még nincs hang</span>{% endif %}
+        {% if st == "done" %}<a class="btn btn-sm project-action" href="/projects/{{ p.id }}/reader">{{ icon("play") }}Meghallgatás</a>{% endif %}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="panel empty">
+    <p>Még nincs hangoskönyved. Húzd a jegyzeted a fenti mezőbe.</p>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

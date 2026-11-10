@@ -1,0 +1,10 @@
+.venv/
+engines/*/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+dist/
+*.tmp
+.claude/
+logs/

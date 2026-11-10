@@ -1,0 +1,27 @@
+{% from "_icons.html" import icon %}
+{% if error %}
+<div class="banner banner-error" role="alert">{{ icon("alert") }}<div>{{ error }}</div></div>
+{% else %}
+<div class="stack">
+  <div class="banner banner-ok" role="status">
+    {{ icon("check") }}<div><strong>Létrejött: {{ project.name }}</strong> ({{ project.chapter_count }} fejezet).
+      A generálás még nem indult: <a href="/projects/{{ project.id }}">nyisd meg</a>, és ott indítsd.</div>
+  </div>
+  {% if math %}
+  <div class="banner banner-warn" role="note">
+    {{ icon("alert") }}<div><strong>Ebben az anyagban képletek vannak.</strong> Jobb eredményhez készíts
+    forgatókönyvet a Claude skill-lel, és azt importáld.</div>
+  </div>
+  {% endif %}
+  {% if report.errors %}
+  <div class="banner banner-error" role="alert">{{ icon("alert") }}<div>A forgatókönyvben {{ report.errors|length }}
+    hiba van; a generálás csak javítás után indul. Nyisd meg a szerkesztőt.</div></div>
+  {% endif %}
+  {% if warnings %}
+  <details>
+    <summary>{{ warnings|length }} figyelmeztetés</summary>
+    <ul class="small">{% for w in warnings %}<li>{{ w }}</li>{% endfor %}</ul>
+  </details>
+  {% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,74 @@
+{% from "_icons.html" import icon %}<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>{% block title %}{{ APP_NAME }}{% endblock %} · {{ APP_NAME }}</title>
+  <script>try { if (localStorage.getItem("felolvaso.theme") === "light") document.documentElement.dataset.theme = "light"; } catch {}</script>
+  <link rel="icon" href="/static/zengo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/htmx.min.js" defer></script>
+  <script src="/static/app.js" defer></script>
+  {% block head %}{% endblock %}
+</head>
+<body hx-headers='{"X-Felolvaso": "1"}'>
+<a class="skip" href="#main">Ugrás a tartalomhoz</a>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">{{ icon("logo") }}<span>{{ APP_NAME }}</span></div>
+    <nav class="nav" aria-label="Fő navigáció">
+      {% set items = [("projects", "/", "Hangoskönyvek"), ("voices", "/voices", "Hangok"),
+                      ("lexicon", "/lexicon", "Kiejtési szótár"), ("settings", "/settings", "Beállítások")] %}
+      {% for key, href, label in items %}
+      <a href="{{ href }}" {% if nav == key %}aria-current="page"{% endif %}>{{ icon(key) }}<span>{{ label }}</span></a>
+      {% endfor %}
+    </nav>
+    <div class="sidebar-foot">
+      <p>Helyi hangoskönyv-készítő<br><span class="mono">{{ request.url.netloc }}</span></p>
+      <button class="btn btn-sm theme-toggle" type="button" data-theme-toggle aria-pressed="false">Papír téma</button>
+      <button class="signature" type="button" data-signature aria-haspopup="dialog"
+              aria-controls="app-info">psz // v{{ APP_VERSION }}</button>
+    </div>
+  </aside>
+  <main id="main" tabindex="-1">
+    {% if ffmpeg and not ffmpeg.available %}
+    <div class="banner banner-error" role="alert" style="margin-bottom: var(--space-4)">
+      {{ icon("alert") }}<div><strong>Az ffmpeg nem található.</strong> Az export nem indul el, amíg nincs
+      telepítve, vagy amíg meg nem adod az útvonalát a <a href="/settings">Beállításokban</a>.</div>
+    </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+<div id="conn-lost" class="banner banner-error" role="alert" hidden>
+  {{ icon("alert") }}<div><strong>A(z) {{ APP_NAME }} belső szervere nem válaszol.</strong> Zárd be és indítsd újra
+  a(z) {{ APP_NAME }} programot.</div>
+</div>
+<dialog class="app-info" id="app-info" aria-labelledby="app-info-title">
+  <header>
+    <h2 id="app-info-title">{{ APP_NAME }} <span class="mono">v{{ APP_VERSION }}</span></h2>
+    <button class="btn btn-sm" type="button" data-signature-close aria-label="Bezárás">×</button>
+  </header>
+  <p>Helyi magyar hangoskönyv-készítő: jegyzetből vagy kész forgatókönyvből neurális hangon felolvasott
+    MP3 / M4B készül, az olvasónézetben a felolvasott rész kiemelve követhető.</p>
+  <h3>Rétegek</h3>
+  <ul>
+    <li><b>Előkészítés:</b> importálás (PDF, DOCX, EPUB, Markdown), képletolvasó, magyar normalizáló, kiejtési szótár</li>
+    <li><b>Hangmotorok:</b> F5-TTS (magyar finomhangolás), Piper külön workerekben (JSON-RPC, saját venv)</li>
+    <li><b>Feldolgozás:</b> feladatsor, gyorsítótár, whisper-alapú minőségellenőrzés, ffmpeg export</li>
+    <li><b>Felület:</b> asztali ablak (pywebview, WebView2), szerkesztő, olvasónézet, MCP szerver</li>
+  </ul>
+  <h3>Technológia</h3>
+  <p>Python · pywebview · FastAPI · Jinja2 · htmx · vanilla JS / CSS · SQLite · PyTorch · faster-whisper · ffmpeg · KaTeX</p>
+  <h3>Repók</h3>
+  <ul class="mono small">
+    <li><a href="https://github.com/SWivid/F5-TTS" target="_blank" rel="noopener">SWivid/F5-TTS</a> ·
+      <a href="https://huggingface.co/sarpba/F5-TTS_V1_hun" target="_blank" rel="noopener">sarpba/F5-TTS_V1_hun</a></li>
+    <li><a href="https://github.com/OHF-Voice/piper1-gpl" target="_blank" rel="noopener">OHF-Voice/piper1-gpl</a> ·
+      <a href="https://github.com/r0x0r/pywebview" target="_blank" rel="noopener">r0x0r/pywebview</a></li>
+    <li><a href="https://github.com/SYSTRAN/faster-whisper" target="_blank" rel="noopener">SYSTRAN/faster-whisper</a></li>
+  </ul>
+</dialog>
+</body>
+</html>

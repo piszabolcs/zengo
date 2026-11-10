@@ -1,0 +1,9 @@
+[project]
+name = "felolvaso-engine-dummy"
+version = "1.0.0"
+description = "Felolvasó tesztmotor (szinuszhang)"
+requires-python = ">=3.11"
+dependencies = ["numpy>=2,<3"]
+
+[tool.uv]
+package = false

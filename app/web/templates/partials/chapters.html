@@ -1,0 +1,9 @@
+{% if chapters %}
+<ol>
+  {% for c in chapters %}
+  <li><button type="button" data-goto-line="{{ c.line }}"><span class="mono muted num">{{ "%02d"|format(c.index + 1) }}</span> {{ c.title }}</button></li>
+  {% endfor %}
+</ol>
+{% else %}
+<p class="muted small">Nincs # fejezet a forgatókönyvben.</p>
+{% endif %}
